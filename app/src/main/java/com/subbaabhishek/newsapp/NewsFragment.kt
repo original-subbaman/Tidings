@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.SearchView
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -20,7 +19,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.subbaabhishek.newsapp.databinding.FragmentNewsBinding
+import com.subbaabhishek.newsapp.presentation.adapter.CategoryItemDecoration
 import com.subbaabhishek.newsapp.presentation.adapter.NewsAdapter
+import com.subbaabhishek.newsapp.presentation.adapter.NewsCategoryAdapter
 import com.subbaabhishek.newsapp.presentation.util.CountryCodeMap
 import com.subbaabhishek.newsapp.presentation.util.SelectCountryAlertDialog
 import com.subbaabhishek.newsapp.presentation.viewmodel.NewsViewModel
@@ -33,6 +34,7 @@ class NewsFragment : Fragment(){
     private lateinit var viewModel: NewsViewModel
     private lateinit var fragmentNewsBinding: FragmentNewsBinding
     private lateinit var newsAdapter: NewsAdapter
+    private lateinit var categoryAdapter: NewsCategoryAdapter
     private lateinit var countries : List<String>
     private var isoCountryCode = "us"
     private var country = "United States"
@@ -71,8 +73,10 @@ class NewsFragment : Fragment(){
         viewModel = (activity as MainActivity).viewModel
         countries = resources.getStringArray(R.array.country_array).toList()
 
-        initRecyclerAdapter()
-        initRecyclerView()
+        initNewsCategoryRecyclerAdapter()
+        initCategoryRecyclerView()
+        initNewsRecyclerAdapter()
+        initNewsRecyclerView()
         viewNewsList()
         setSearchView()
         setUpBottomNavView()
@@ -127,7 +131,20 @@ class NewsFragment : Fragment(){
         }
     }
 
-    private fun initRecyclerAdapter(){
+    private fun initNewsCategoryRecyclerAdapter(){
+       categoryAdapter = (activity as MainActivity).categoryAdapter
+    }
+
+    private fun initCategoryRecyclerView(){
+        fragmentNewsBinding.rvCategory.apply {
+            adapter = categoryAdapter
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+            addItemDecoration(CategoryItemDecoration())
+        }
+    }
+
+    private fun initNewsRecyclerAdapter(){
         newsAdapter = (activity as MainActivity).newsAdapter
         newsAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
@@ -141,7 +158,7 @@ class NewsFragment : Fragment(){
         }
     }
 
-    private fun initRecyclerView() {
+    private fun initNewsRecyclerView() {
         fragmentNewsBinding.rvNews.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
@@ -197,7 +214,7 @@ class NewsFragment : Fragment(){
 
                 })
                 searchView.setOnCloseListener {
-                    initRecyclerView()
+                    initNewsRecyclerView()
                     viewNewsList()
                     false
                 }

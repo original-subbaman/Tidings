@@ -16,11 +16,26 @@
         android:layout_gravity="center"
         tools:visibility="invisible" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvNews"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="3dp" />
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCategory"
+            android:layout_width="match_parent"
+            android:background="@color/purple_500"
+            android:layout_height="?attr/actionBarSize"
+            android:padding="3dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvNews"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="3dp" />
+
+    </LinearLayout>
+
 
 
     <TextView

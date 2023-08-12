@@ -21,7 +21,6 @@ data class Article(
     val description: String?,
     @SerializedName("publishedAt")
     val publishedAt: String?,
-
     @SerializedName("title")
     val title: String?,
     @SerializedName("url")

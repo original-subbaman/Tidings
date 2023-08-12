@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.subbaabhishek.newsapp.databinding.ActivityMainBinding
 import com.subbaabhishek.newsapp.presentation.adapter.NewsAdapter
+import com.subbaabhishek.newsapp.presentation.adapter.NewsCategoryAdapter
 import com.subbaabhishek.newsapp.presentation.viewmodel.NewsViewModel
 import com.subbaabhishek.newsapp.presentation.viewmodel.NewsViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var factory: NewsViewModelFactory
     @Inject
     lateinit var newsAdapter: NewsAdapter
+    @Inject
+    lateinit var categoryAdapter: NewsCategoryAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)

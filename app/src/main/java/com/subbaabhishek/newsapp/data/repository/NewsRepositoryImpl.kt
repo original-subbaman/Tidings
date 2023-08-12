@@ -28,6 +28,16 @@ class NewsRepositoryImpl(
         )
     }
 
+    override suspend fun getNewsFromCategory(
+        country: String,
+        page: Int,
+        category: String
+    ): Resource<APIResponse> {
+        return responseToResource(
+            newsRemoteDataSource.getNewsFromCategory(country, page, category)
+        )
+    }
+
     private fun responseToResource(response : Response<APIResponse>) : Resource<APIResponse>{
         if(response.isSuccessful){
             response.body()?.let{
