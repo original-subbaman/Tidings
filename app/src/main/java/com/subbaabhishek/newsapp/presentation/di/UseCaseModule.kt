@@ -3,6 +3,7 @@ package com.subbaabhishek.newsapp.presentation.di
 import com.subbaabhishek.newsapp.domain.repository.NewsRepository
 import com.subbaabhishek.newsapp.domain.usecase.DeleteSavedNews
 import com.subbaabhishek.newsapp.domain.usecase.GetNewsHeadline
+import com.subbaabhishek.newsapp.domain.usecase.GetNewsFromCategory
 import com.subbaabhishek.newsapp.domain.usecase.GetSavedNews
 import com.subbaabhishek.newsapp.domain.usecase.GetSearchedNews
 import com.subbaabhishek.newsapp.domain.usecase.SaveNews
@@ -54,5 +55,13 @@ class UseCaseModule {
         newsRepository: NewsRepository
     ) : DeleteSavedNews{
         return DeleteSavedNews(newsRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun providesGetNewsOfCategory(
+        newsRepository: NewsRepository
+    ) : GetNewsFromCategory{
+        return GetNewsFromCategory(newsRepository)
     }
 }

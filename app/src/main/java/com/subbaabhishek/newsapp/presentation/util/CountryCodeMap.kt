@@ -2,6 +2,7 @@ package com.subbaabhishek.newsapp.presentation.util
 
 object CountryCodeMap {
     val isoCodeToNameMap = hashMapOf(
+        "All" to "all",
         "United Arab Emirates" to "ae",
         "Argentina" to "ar",
         "Austria" to "at",

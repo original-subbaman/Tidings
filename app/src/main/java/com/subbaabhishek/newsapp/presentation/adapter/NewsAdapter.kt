@@ -60,12 +60,7 @@ class NewsAdapter() : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
 
             binding.root.setOnClickListener {
                 onItemClickListener?.let {
-                    if(article == null){
-                        Log.i("MYAPP", "article is null")
-                    }else{
-                        Log.i("MYAPP", "${article.title}")
-                        it(article)
-                    }
+                    it(article)
                 }
             }
         }

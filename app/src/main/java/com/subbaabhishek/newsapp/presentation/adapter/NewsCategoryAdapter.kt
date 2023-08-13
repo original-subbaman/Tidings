@@ -3,6 +3,7 @@ package com.subbaabhishek.newsapp.presentation.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.AdapterView.OnItemClickListener
 import androidx.recyclerview.widget.RecyclerView
 import com.subbaabhishek.newsapp.data.model.Category
 import com.subbaabhishek.newsapp.databinding.CategoryListItemLayoutBinding
@@ -23,11 +24,19 @@ class NewsCategoryAdapter() : RecyclerView.Adapter<NewsCategoryAdapter.NewsCateg
         holder.bind(Category.CategoryList[position])
     }
 
+    private var onItemClickListener : ((String) -> Unit)? = null
+
+    fun setOnItemClickListener(listener : ((String) -> Unit)){
+       onItemClickListener = listener
+    }
+
     inner class NewsCategoryViewHolder(private val binding : CategoryListItemLayoutBinding) : RecyclerView.ViewHolder(binding.root){
         fun bind(category : String){
             binding.categoryNameBtn.text = category
             binding.categoryNameBtn.setOnClickListener {
-                Log.i("MYAPP", "Clicked")
+                onItemClickListener?.let {
+                    it(category)
+                }
             }
         }
     }

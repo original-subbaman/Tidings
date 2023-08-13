@@ -29,13 +29,13 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class NewsFragment : Fragment(){
+class NewsFragment : Fragment() {
 
     private lateinit var viewModel: NewsViewModel
     private lateinit var fragmentNewsBinding: FragmentNewsBinding
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var categoryAdapter: NewsCategoryAdapter
-    private lateinit var countries : List<String>
+    private lateinit var countries: List<String>
     private var isoCountryCode = "us"
     private var country = "United States"
     private var page = 1
@@ -46,11 +46,11 @@ class NewsFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setFragmentResultListener("index"){
-                _, bundle ->
+        setFragmentResultListener("index") { _, bundle ->
             val countryFromBundle = countries[bundle.getInt("index_country")]
-            if(countryFromBundle.isNotEmpty()){
-                isoCountryCode = CountryCodeMap.isoCodeToNameMap.getOrDefault(countryFromBundle, isoCountryCode)
+            if (countryFromBundle.isNotEmpty()) {
+                isoCountryCode =
+                    CountryCodeMap.isoCodeToNameMap.getOrDefault(countryFromBundle, isoCountryCode)
             }
             country = countryFromBundle
             page = 1
@@ -77,14 +77,57 @@ class NewsFragment : Fragment(){
         initCategoryRecyclerView()
         initNewsRecyclerAdapter()
         initNewsRecyclerView()
-        viewNewsList()
+        viewModel.getNewsHeadline(isoCountryCode, page)
+        viewTopNewsList()
         setSearchView()
         setUpBottomNavView()
 
     }
 
-    private fun viewNewsList() {
-        viewModel.getNewsHeadline(isoCountryCode, page)
+    private fun initNewsCategoryRecyclerAdapter() {
+        categoryAdapter = (activity as MainActivity).categoryAdapter
+        categoryAdapter.setOnItemClickListener {
+            if(it == "all"){
+                viewModel.getNewsHeadline(isoCountryCode, page)
+            }else{
+                viewModel.getNewsFromCategory(isoCountryCode, page, it)
+            }
+            viewTopNewsList()
+        }
+    }
+
+    private fun initCategoryRecyclerView() {
+        fragmentNewsBinding.rvCategory.apply {
+            adapter = categoryAdapter
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
+            addItemDecoration(CategoryItemDecoration())
+        }
+    }
+
+    private fun initNewsRecyclerAdapter() {
+        newsAdapter = (activity as MainActivity).newsAdapter
+        newsAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("selected_article", it)
+            }
+            findNavController()
+                .navigate(
+                    R.id.action_newsFragment_to_infoFragment,
+                    bundle
+                )
+        }
+    }
+
+    private fun initNewsRecyclerView() {
+        fragmentNewsBinding.rvNews.apply {
+            adapter = newsAdapter
+            layoutManager = LinearLayoutManager(activity)
+            addOnScrollListener(onScrollListener)
+        }
+    }
+
+    private fun viewTopNewsList() {
         viewModel.newsHeadLine.observe(
             viewLifecycleOwner
         ) { response ->
@@ -92,11 +135,11 @@ class NewsFragment : Fragment(){
                 is com.subbaabhishek.newsapp.data.util.Resource.Success -> {
                     hideProgressBar()
                     response.data?.let {
-                        if(it.articles.toList().isEmpty()){
+                        if (it.articles.toList().isEmpty()) {
                             fragmentNewsBinding.btnNextPage.isEnabled = false
                             fragmentNewsBinding.rvNews.visibility = View.GONE
                             fragmentNewsBinding.emptyNewsText.visibility = View.VISIBLE
-                        }else{
+                        } else {
                             fragmentNewsBinding.emptyNewsText.visibility = View.GONE
                             fragmentNewsBinding.rvNews.visibility = View.VISIBLE
                             fragmentNewsBinding.btnNextPage.isEnabled = true
@@ -131,47 +174,12 @@ class NewsFragment : Fragment(){
         }
     }
 
-    private fun initNewsCategoryRecyclerAdapter(){
-       categoryAdapter = (activity as MainActivity).categoryAdapter
-    }
-
-    private fun initCategoryRecyclerView(){
-        fragmentNewsBinding.rvCategory.apply {
-            adapter = categoryAdapter
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false)
-            addItemDecoration(CategoryItemDecoration())
-        }
-    }
-
-    private fun initNewsRecyclerAdapter(){
-        newsAdapter = (activity as MainActivity).newsAdapter
-        newsAdapter.setOnItemClickListener {
-            val bundle = Bundle().apply {
-                putSerializable("selected_article", it)
-            }
-            findNavController()
-                .navigate(
-                    R.id.action_newsFragment_to_infoFragment,
-                    bundle
-                )
-        }
-    }
-
-    private fun initNewsRecyclerView() {
-        fragmentNewsBinding.rvNews.apply {
-            adapter = newsAdapter
-            layoutManager = LinearLayoutManager(activity)
-            addOnScrollListener(onScrollListener)
-        }
-    }
-
-    private fun setUpBottomNavView(){
+    private fun setUpBottomNavView() {
         fragmentNewsBinding.btnNextPage.setOnClickListener {
             nextPage()
         }
         fragmentNewsBinding.btnPrevPage.setOnClickListener {
-           prevPage()
+            prevPage()
         }
     }
 
@@ -186,16 +194,16 @@ class NewsFragment : Fragment(){
     }
 
     private fun setSearchView() {
-        (requireActivity() as MenuHost).addMenuProvider(object  : MenuProvider{
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.app_bar_menu, menu)
-                val searchView : SearchView = menu.findItem(R.id.search).actionView as SearchView
+                val searchView: SearchView = menu.findItem(R.id.search).actionView as SearchView
                 searchView.queryHint = "Search news headlines..."
                 searchView.maxWidth = Integer.MAX_VALUE
 
                 Log.i("MYAPP", "Menu create")
 
-                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(p0: String?): Boolean {
                         viewModel.getSearchedNews("us", page = page, p0.toString())
                         viewSearchedNews()
@@ -215,22 +223,25 @@ class NewsFragment : Fragment(){
                 })
                 searchView.setOnCloseListener {
                     initNewsRecyclerView()
-                    viewNewsList()
+                    viewTopNewsList()
                     false
                 }
 
 
             }
+
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return when (menuItem.itemId){
+                return when (menuItem.itemId) {
                     R.id.search -> {
                         true
                     }
+
                     R.id.country -> {
                         //display select box
                         SelectCountryAlertDialog().show(parentFragmentManager, "Alert Dialog")
                         true
                     }
+
                     else -> false
                 }
             }
@@ -265,12 +276,14 @@ class NewsFragment : Fragment(){
                         isLastPage = page == pages
                     }
                 }
+
                 is com.subbaabhishek.newsapp.data.util.Resource.Error -> {
                     hideProgressBar()
                     response.message?.let {
                         Toast.makeText(activity, "An error occurred: $it", Toast.LENGTH_LONG).show()
                     }
                 }
+
                 is com.subbaabhishek.newsapp.data.util.Resource.Loading -> {
                     showProgressBar()
                 }
@@ -278,20 +291,21 @@ class NewsFragment : Fragment(){
         }
     }
 
-    private fun nextPage(){
+    private fun nextPage() {
         page++
         viewModel.getNewsHeadline(isoCountryCode, page)
         setPageNumberText()
     }
 
-    private fun prevPage(){
-        page = if(page == 1) page else page - 1
+    private fun prevPage() {
+        page = if (page == 1) page else page - 1
         viewModel.getNewsHeadline(isoCountryCode, page)
         setPageNumberText()
     }
 
-    private fun setPageNumberText(){
-        fragmentNewsBinding.pageTextView.text = resources.getString(R.string.page_number, page.toString())
+    private fun setPageNumberText() {
+        fragmentNewsBinding.pageTextView.text =
+            resources.getString(R.string.page_number, page.toString())
         Log.i("MyApp", "${resources.getString(R.string.page_number, page.toString())}")
 
     }
@@ -322,10 +336,6 @@ class NewsFragment : Fragment(){
 
         }
     }
-
-
-
-
 
 
 }

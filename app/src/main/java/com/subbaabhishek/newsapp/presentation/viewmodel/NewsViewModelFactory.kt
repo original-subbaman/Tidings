@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.subbaabhishek.newsapp.domain.usecase.DeleteSavedNews
 import com.subbaabhishek.newsapp.domain.usecase.GetNewsHeadline
+import com.subbaabhishek.newsapp.domain.usecase.GetNewsFromCategory
 import com.subbaabhishek.newsapp.domain.usecase.GetSavedNews
 import com.subbaabhishek.newsapp.domain.usecase.GetSearchedNews
 import com.subbaabhishek.newsapp.domain.usecase.SaveNews
@@ -16,8 +17,9 @@ class NewsViewModelFactory(
     private val saveNews: SaveNews,
     private val getSavedNews: GetSavedNews,
     private val deleteSavedNews: DeleteSavedNews,
+    private val getNewsFromCategory: GetNewsFromCategory,
 
-) : ViewModelProvider.Factory{
+    ) : ViewModelProvider.Factory{
 
     override fun <T : ViewModel> create(modelClass : Class<T>) : T {
         return NewsViewModel(
@@ -26,7 +28,8 @@ class NewsViewModelFactory(
             getSearchedNews,
             saveNews,
             getSavedNews,
-            deleteSavedNews
+            deleteSavedNews,
+            getNewsFromCategory
         ) as T
     }
 }

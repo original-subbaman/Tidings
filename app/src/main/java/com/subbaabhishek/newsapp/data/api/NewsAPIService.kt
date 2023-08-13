@@ -35,10 +35,10 @@ interface NewsAPIService {
     suspend fun getNewsFromCategory(
         @Query("country")
         country: String,
-        @Query("category")
-        category: String,
         @Query("page")
         page: Int,
+        @Query("category")
+        category: String,
         @Query("apiKey")
         apiKey: String = BuildConfig.API_KEY
     ) : Response<APIResponse>

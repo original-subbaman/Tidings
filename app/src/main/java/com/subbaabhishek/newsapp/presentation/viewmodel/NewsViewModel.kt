@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
@@ -14,11 +15,11 @@ import com.subbaabhishek.newsapp.data.model.Article
 import com.subbaabhishek.newsapp.data.util.Resource
 import com.subbaabhishek.newsapp.domain.usecase.DeleteSavedNews
 import com.subbaabhishek.newsapp.domain.usecase.GetNewsHeadline
+import com.subbaabhishek.newsapp.domain.usecase.GetNewsFromCategory
 import com.subbaabhishek.newsapp.domain.usecase.GetSavedNews
 import com.subbaabhishek.newsapp.domain.usecase.GetSearchedNews
 import com.subbaabhishek.newsapp.domain.usecase.SaveNews
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -29,6 +30,7 @@ class NewsViewModel(
     private val saveNews: SaveNews,
     private val getSavedNews: GetSavedNews,
     private val deleteSavedNews: DeleteSavedNews,
+    private val getNewsFromCategory: GetNewsFromCategory,
 ) : AndroidViewModel(app) {
     val newsHeadLine : MutableLiveData<Resource<APIResponse>> = MutableLiveData()
 
@@ -38,6 +40,8 @@ class NewsViewModel(
                 newsHeadLine.postValue(Resource.Loading())
                 val apiResult = getNewsHeadline.execute(country, page)
                 newsHeadLine.postValue(apiResult)
+
+                Log.i("MYAPP", "${apiResult.data}")
             }else{
                 newsHeadLine.postValue(Resource.Error("Internet is not available"))
             }
@@ -46,6 +50,22 @@ class NewsViewModel(
         }
 
 
+    }
+
+    fun getNewsFromCategory(country: String, page: Int, category: String) = viewModelScope.launch(Dispatchers.IO) {
+        try{
+            if(isNetworkAvailable(app)){
+                newsHeadLine.postValue(Resource.Loading())
+                Log.i("MYAPP", "$country, $page, $category")
+                val apiResult = getNewsFromCategory.execute(country, page, category)
+                Log.i("MYAPP", "${apiResult.data}")
+                newsHeadLine.postValue(apiResult)
+            }else{
+                newsHeadLine.postValue(Resource.Error("Internet is not available"))
+            }
+        }catch (e: Exception){
+            newsHeadLine.postValue(Resource.Error(e.message.toString()))
+        }
     }
 
     private fun isNetworkAvailable(context : Context?) : Boolean{

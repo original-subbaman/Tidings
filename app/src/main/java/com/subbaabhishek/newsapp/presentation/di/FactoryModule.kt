@@ -3,6 +3,7 @@ package com.subbaabhishek.newsapp.presentation.di
 import android.app.Application
 import com.subbaabhishek.newsapp.domain.usecase.DeleteSavedNews
 import com.subbaabhishek.newsapp.domain.usecase.GetNewsHeadline
+import com.subbaabhishek.newsapp.domain.usecase.GetNewsFromCategory
 import com.subbaabhishek.newsapp.domain.usecase.GetSavedNews
 import com.subbaabhishek.newsapp.domain.usecase.GetSearchedNews
 import com.subbaabhishek.newsapp.domain.usecase.SaveNews
@@ -26,7 +27,8 @@ class FactoryModule {
         saveNews: SaveNews,
         getSavedNews: GetSavedNews,
         deleteSavedNews: DeleteSavedNews,
+        getNewsFromCategory: GetNewsFromCategory,
     ) : NewsViewModelFactory{
-        return NewsViewModelFactory(application, getNewsHeadline, getSearchedNews, saveNews, getSavedNews, deleteSavedNews)
+        return NewsViewModelFactory(application, getNewsHeadline, getSearchedNews, saveNews, getSavedNews, deleteSavedNews, getNewsFromCategory)
     }
 }
