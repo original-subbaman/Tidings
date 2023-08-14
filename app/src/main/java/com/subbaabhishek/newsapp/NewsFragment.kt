@@ -15,6 +15,8 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +28,11 @@ import com.subbaabhishek.newsapp.presentation.util.CountryCodeMap
 import com.subbaabhishek.newsapp.presentation.util.SelectCountryAlertDialog
 import com.subbaabhishek.newsapp.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class NewsFragment : Fragment() {
@@ -36,8 +42,7 @@ class NewsFragment : Fragment() {
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var categoryAdapter: NewsCategoryAdapter
     private lateinit var countries: List<String>
-    private var isoCountryCode = "us"
-    private var country = "United States"
+    private var isoCountryCode : String = "us"
     private var page = 1
     private var isScrolling = false
     private var isLoading = false
@@ -52,9 +57,9 @@ class NewsFragment : Fragment() {
                 isoCountryCode =
                     CountryCodeMap.isoCodeToNameMap.getOrDefault(countryFromBundle, isoCountryCode)
             }
-            country = countryFromBundle
             page = 1
             viewModel.getNewsHeadline(isoCountryCode, page)
+            viewModel.setCountryCodePref(isoCountryCode)
             requireActivity().invalidateOptionsMenu()
         }
     }
@@ -64,6 +69,7 @@ class NewsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_news, container, false)
     }
 
@@ -77,12 +83,18 @@ class NewsFragment : Fragment() {
         initCategoryRecyclerView()
         initNewsRecyclerAdapter()
         initNewsRecyclerView()
-        viewModel.getNewsHeadline(isoCountryCode, page)
-        viewTopNewsList()
-        setSearchView()
+        lifecycle.coroutineScope.launch {
+            isoCountryCode = viewModel.isoCode.first()
+            viewModel.getNewsHeadline(isoCountryCode, page)
+            viewTopNewsList()
+            setSearchView()
+        }
+
         setUpBottomNavView()
 
     }
+
+
 
     private fun initNewsCategoryRecyclerAdapter() {
         categoryAdapter = (activity as MainActivity).categoryAdapter
@@ -195,17 +207,17 @@ class NewsFragment : Fragment() {
 
     private fun setSearchView() {
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.app_bar_menu, menu)
                 val searchView: SearchView = menu.findItem(R.id.search).actionView as SearchView
+
                 searchView.queryHint = "Search news headlines..."
                 searchView.maxWidth = Integer.MAX_VALUE
 
-                Log.i("MYAPP", "Menu create")
-
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(p0: String?): Boolean {
-                        viewModel.getSearchedNews("us", page = page, p0.toString())
+                        viewModel.getSearchedNews(isoCountryCode, page = page, p0.toString())
                         viewSearchedNews()
                         return false
                     }
@@ -213,7 +225,7 @@ class NewsFragment : Fragment() {
                     override fun onQueryTextChange(p0: String?): Boolean {
                         MainScope().launch {
                             delay(2000)
-                            viewModel.getSearchedNews("us", page = page, p0.toString())
+                            viewModel.getSearchedNews(isoCountryCode, page = page, p0.toString())
                             viewSearchedNews()
                         }
 
@@ -228,6 +240,7 @@ class NewsFragment : Fragment() {
                 }
 
 
+
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -237,7 +250,6 @@ class NewsFragment : Fragment() {
                     }
 
                     R.id.country -> {
-                        //display select box
                         SelectCountryAlertDialog().show(parentFragmentManager, "Alert Dialog")
                         true
                     }
@@ -248,8 +260,7 @@ class NewsFragment : Fragment() {
 
             override fun onPrepareMenu(menu: Menu) {
                 super.onPrepareMenu(menu)
-                Log.i("myAPP", "invalidated")
-                val isoCountryCode = CountryCodeMap.isoCodeToNameMap[country]
+                val isoCountryCode = this@NewsFragment.isoCountryCode
                 if (isoCountryCode != null) {
                     menu.findItem(R.id.country).title = isoCountryCode.uppercase()
                 }
@@ -306,8 +317,6 @@ class NewsFragment : Fragment() {
     private fun setPageNumberText() {
         fragmentNewsBinding.pageTextView.text =
             resources.getString(R.string.page_number, page.toString())
-        Log.i("MyApp", "${resources.getString(R.string.page_number, page.toString())}")
-
     }
 
 

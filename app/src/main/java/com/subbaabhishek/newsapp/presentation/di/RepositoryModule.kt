@@ -3,7 +3,6 @@ package com.subbaabhishek.newsapp.presentation.di
 import com.subbaabhishek.newsapp.data.repository.NewsRepositoryImpl
 import com.subbaabhishek.newsapp.data.repository.datasource.NewsLocalDataSource
 import com.subbaabhishek.newsapp.data.repository.datasource.NewsRemoteDataSource
-import com.subbaabhishek.newsapp.data.repository.datasourceimpl.NewsRemoteDataSourceImpl
 import com.subbaabhishek.newsapp.domain.repository.NewsRepository
 import dagger.Module
 import dagger.Provides

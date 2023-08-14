@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -15,6 +16,7 @@ import com.subbaabhishek.newsapp.presentation.adapter.NewsCategoryAdapter
 import com.subbaabhishek.newsapp.presentation.viewmodel.NewsViewModel
 import com.subbaabhishek.newsapp.presentation.viewmodel.NewsViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.prefs.Preferences
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var newsAdapter: NewsAdapter
     @Inject
     lateinit var categoryAdapter: NewsCategoryAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)

@@ -21,4 +21,9 @@
         <item name="color">@color/white</item>
     </style>
 
+    <style name="MaterialButtonStyle" parent="ThemeOverlay.Material3.Button">
+        <item name="backgroundTint">@color/color_states_material_button</item>
+    </style>
+
+
 </resources>

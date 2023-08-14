@@ -21,7 +21,7 @@ class UseCaseModule {
     @Singleton
     fun providesNewsHeadLineUseCase(
         newsRepository: NewsRepository
-    ) : GetNewsHeadline{
+    ): GetNewsHeadline {
         return GetNewsHeadline(newsRepository)
     }
 
@@ -29,7 +29,7 @@ class UseCaseModule {
     @Singleton
     fun providesSearchedNewsUseCase(
         newsRepository: NewsRepository
-    ) : GetSearchedNews{
+    ): GetSearchedNews {
         return GetSearchedNews(newsRepository)
     }
 
@@ -37,15 +37,15 @@ class UseCaseModule {
     @Singleton
     fun providesSaveNewsUseCase(
         newsRepository: NewsRepository
-    ) : SaveNews{
+    ): SaveNews {
         return SaveNews(newsRepository)
     }
 
-   @Provides
-   @Singleton
+    @Provides
+    @Singleton
     fun providesGetSavedNews(
         newsRepository: NewsRepository
-    ) : GetSavedNews{
+    ): GetSavedNews {
         return GetSavedNews(newsRepository)
     }
 
@@ -53,7 +53,7 @@ class UseCaseModule {
     @Singleton
     fun providesDeleteNewsUseCase(
         newsRepository: NewsRepository
-    ) : DeleteSavedNews{
+    ): DeleteSavedNews {
         return DeleteSavedNews(newsRepository)
     }
 
@@ -61,7 +61,8 @@ class UseCaseModule {
     @Singleton
     fun providesGetNewsOfCategory(
         newsRepository: NewsRepository
-    ) : GetNewsFromCategory{
+    ): GetNewsFromCategory {
         return GetNewsFromCategory(newsRepository)
     }
+
 }
