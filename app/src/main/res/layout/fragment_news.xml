@@ -99,6 +99,7 @@
             android:backgroundTint="@color/purple_75"
             android:paddingLeft="15dp"
             android:paddingTop="10dp"
+            android:text="Page: 1"
             android:paddingRight="15dp"
             android:paddingBottom="10dp"
             android:textAlignment="center"
