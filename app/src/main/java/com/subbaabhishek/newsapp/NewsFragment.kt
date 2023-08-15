@@ -1,7 +1,6 @@
 package com.subbaabhishek.newsapp
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -16,7 +15,6 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.coroutineScope
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,10 +26,7 @@ import com.subbaabhishek.newsapp.presentation.util.CountryCodeMap
 import com.subbaabhishek.newsapp.presentation.util.SelectCountryAlertDialog
 import com.subbaabhishek.newsapp.presentation.viewmodel.NewsViewModel
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -93,8 +88,6 @@ class NewsFragment : Fragment() {
         setUpBottomNavView()
 
     }
-
-
 
     private fun initNewsCategoryRecyclerAdapter() {
         categoryAdapter = (activity as MainActivity).categoryAdapter
@@ -261,9 +254,7 @@ class NewsFragment : Fragment() {
             override fun onPrepareMenu(menu: Menu) {
                 super.onPrepareMenu(menu)
                 val isoCountryCode = this@NewsFragment.isoCountryCode
-                if (isoCountryCode != null) {
-                    menu.findItem(R.id.country).title = isoCountryCode.uppercase()
-                }
+                menu.findItem(R.id.country).title = isoCountryCode.uppercase()
 
             }
         }, viewLifecycleOwner, androidx.lifecycle.Lifecycle.State.RESUMED)
@@ -330,6 +321,7 @@ class NewsFragment : Fragment() {
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
+
             val layoutManager = fragmentNewsBinding.rvNews.layoutManager as LinearLayoutManager
             val sizeOfTheCurrentList = layoutManager.itemCount
             val visibleItems = layoutManager.childCount

@@ -1,6 +1,5 @@
 package com.subbaabhishek.newsapp.presentation.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -11,6 +10,7 @@ import com.subbaabhishek.newsapp.data.model.Article
 import com.subbaabhishek.newsapp.databinding.NewsListItemBinding
 
 class NewsAdapter() : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
+
 
     private val callback = object : DiffUtil.ItemCallback<Article>(){
         override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
@@ -58,9 +58,12 @@ class NewsAdapter() : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
                 .load(article.urlToImage)
                 .into(binding.ivArticleImage)
 
+
             binding.root.setOnClickListener {
+
                 onItemClickListener?.let {
                     it(article)
+
                 }
             }
         }

@@ -68,7 +68,7 @@
             android:text="@string/prev"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:textSize="18sp"
             app:backgroundTint="@color/l_blue"
             app:cornerRadius="20dp" />
 
@@ -83,7 +83,7 @@
             android:text="@string/next"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="22sp"
+            android:textSize="18sp"
             app:backgroundTint="@color/l_blue"
             app:cornerRadius="20dp" />
 
@@ -101,7 +101,6 @@
             android:paddingTop="10dp"
             android:paddingRight="15dp"
             android:paddingBottom="10dp"
-            android:text="Page 1"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="@color/white"

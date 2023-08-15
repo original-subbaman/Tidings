@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
@@ -38,7 +37,7 @@ class UserPreferenceRepository(
         }
         .map {
         preferences ->
-            preferences[COUNTRY_CODE] ?: ""
+            preferences[COUNTRY_CODE] ?: "in"
     }
 
 }
